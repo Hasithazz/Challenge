@@ -13,6 +13,7 @@ public class User {
 
     static JSONArray userJsonArray, ticketJsonArray, organizationJsonArray;
     FileFactory fileFactory = new FileFactory();
+    ArrayList<LinkedHashMap<String, String>> linkedHashMapArrayList = new ArrayList<>();
 
     public User() {
         JsonFile user = fileFactory.getFile("USER");
@@ -32,16 +33,15 @@ public class User {
         return isValidated;
     }
 
-    public boolean search(String term, String value) {
+    public ArrayList<LinkedHashMap<String, String>> search(String term, String value) {
         boolean isAvailable = false;
         for (int i = 0; i < userJsonArray.length(); i++) {
-            isAvailable = findByField(term, value, userJsonArray.getJSONObject(i));
+            findByField(term, value, userJsonArray.getJSONObject(i));
         }
-        return isAvailable;
+        return linkedHashMapArrayList;
     }
 
-    private boolean findByField(String term, String value, JSONObject jsonObject) {
-        boolean isAvailable = false;
+    private void findByField(String term, String value, JSONObject jsonObject) {
         try {
 
             switch (term) {
@@ -49,7 +49,6 @@ public class User {
                 case "organization_id":
                     if (jsonObject.getInt(term) == Integer.parseInt(value)) {
                         getUser(jsonObject);
-                        isAvailable = true;
                     }
                     break;
                 case "url":
@@ -66,7 +65,6 @@ public class User {
                 case "role":
                     if (jsonObject.getString(term).equalsIgnoreCase(value)) {
                         getUser(jsonObject);
-                        isAvailable = true;
                     }
                     break;
                 case "active":
@@ -75,29 +73,28 @@ public class User {
                 case "suspended":
                     if (jsonObject.getBoolean(term) == Boolean.parseBoolean(value)) {
                         getUser(jsonObject);
-                        isAvailable = true;
                     }
                     break;
                 case "tags":
                     for (int i = 0; i < jsonObject.getJSONArray(term).length(); i++) {
                         if (jsonObject.getJSONArray(term).getString(i).equalsIgnoreCase(value)) {
                             getUser(jsonObject);
-                            isAvailable = true;
                         }
                     }
                     break;
+                case "quit":
+                    System.exit(0);
+                    break;
                 default:
                     System.out.println("Searching users for " + term + " with a value of" + value + "\n No results found");
-                    return false;
+
             }
 
         } catch (JSONException ex) {
 
         } catch (NumberFormatException ex) {
             System.out.println("Please Enter Valid input");
-            return false;
         }
-        return isAvailable;
     }
 
     private void getUser(JSONObject jsonObject) {
@@ -124,7 +121,7 @@ public class User {
             userDetailsMap.put("ticket_" + i, tickets.get(i));
         }
 
-        printDetails(userDetailsMap);
+        linkedHashMapArrayList.add(userDetailsMap);
     }
 
     private String getOrganizationName(int organization_id) {

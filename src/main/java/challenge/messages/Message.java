@@ -43,11 +43,11 @@ public class Message {
 
     public void displaySearchableFields() {
         String line = "----------------------------------------------------";
-        System.out.println(line+"\n"+"Search users with");
+        System.out.println(line + "\n" + "Search users with");
         user.getSearchableFields().forEach((item) -> System.out.println(item));
-        System.out.println(line+"\n"+"Search tickets with");
+        System.out.println(line + "\n" + "Search tickets with");
         ticket.getSearchableFields().forEach((item) -> System.out.println(item));
-        System.out.println(line+"\n"+"Search organizations with");
+        System.out.println(line + "\n" + "Search organizations with");
         organization.getSearchableFields().forEach((item) -> System.out.println(item));
 
     }
@@ -80,13 +80,13 @@ public class Message {
             String value = input.nextLine();
             ArrayList<LinkedHashMap<String, String>> arrayList = organization.search(term, value);
             if (arrayList.isEmpty()) {
-                System.out.println("Searching users for " + term + " with a value of " + value + "\nNo results found");
+                System.out.println("Searching organization for " + term + " with a value of " + value + "\nNo results found");
             } else {
                 printDetails(arrayList);
             }
         } else {
             System.out.println("Unknown term!!! please use correct term to search.");
-            searchByUsers();
+            searchByOrganization();
         }
     }
 
@@ -99,13 +99,13 @@ public class Message {
             String value = input.nextLine();
             ArrayList<LinkedHashMap<String, String>> arrayList = ticket.search(term, value);
             if (arrayList.isEmpty()) {
-                System.out.println("Searching users for " + term + " with a value of " + value + "\nNo results found");
+                System.out.println("Searching ticket for " + term + " with a value of " + value + "\nNo results found");
             } else {
                 printDetails(arrayList);
             }
         } else {
             System.out.println("Unknown term!!! please use correct term to search.");
-            searchByUsers();
+            searchByTickets();
         }
     }
 
@@ -115,7 +115,12 @@ public class Message {
         if (user.validateSearchTerm(term)) {
             System.out.println("Enter search value");
             String value = input.nextLine();
-            user.search(term, value);
+            ArrayList<LinkedHashMap<String, String>> arrayList = user.search(term, value);
+            if (arrayList.isEmpty()) {
+                System.out.println("Searching users for " + term + " with a value of " + value + "\nNo results found");
+            } else {
+                printDetails(arrayList);
+            }
         } else {
             System.out.println("Unknown term!!! please use correct term to search.");
             searchByUsers();
